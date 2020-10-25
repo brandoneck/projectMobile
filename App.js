@@ -21,7 +21,11 @@ export default class App extends Component{
                 options={{ headerShown: false }}
               />
               <Stack.Screen name="Details" component={Details}
-              opcions={{ headerShown: false }}
+              options={{
+                title: 'DETAIL',
+                headerTitleAlign: 'center',
+              }}
+                
             />
             </Stack.Navigator>
           </NavigationContainer>

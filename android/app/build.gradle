@@ -145,12 +145,10 @@ android {
     }
     signingConfigs {
         release {
-            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                blrMobile file(MYAPP_UPLOAD_STORE_FILE)
-                password123 MYAPP_UPLOAD_STORE_PASSWORD
-                blr MYAPP_UPLOAD_KEY_ALIAS
-                password123 MYAPP_UPLOAD_KEY_PASSWORD
-            }
+            storeFile file('blrMobile.keystore')
+            storePassword 'password123'
+            keyAlias 'blrz'
+            keyPassword 'password123'
         }
     }
     buildTypes {

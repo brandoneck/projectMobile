@@ -128,67 +128,59 @@ export default class ListFeed extends Component {
                     null
                 }
 
-                <FlatList data={this.state.data} renderItem={({ item, index }) => (
-                    <CardItem style={styleFeed.cards}>
-                        <TouchableHighlight
-                            onPress={() => this.props.navigation.navigate('Details', { params: [item] })}
-                        >
-                            <View style={styleFeed.column1}>
-                                <Thumbnail square large source={{ uri: item.Thumbnail }} />
-                            </View>
-                        </TouchableHighlight>
-                        <View style={styleFeed.column2}>
-                            <TouchableHighlight
-                                onPress={() => this.props.navigation.navigate('Details', { params: item })}
-                            >
-                                <View>
-                                    {/* <Text>{this.state.data[item]}</Text> */}
-                                    <Text style={styleFeed.title}>{item.PlaceName}</Text>
-                                    <Rating
-                                        type='star'
-                                        count={5}
-                                        onStartRating={item.Rating}
-                                        onFinishRating={item.Rating}
-                                        startingValue={item.Rating}
-                                        readonly={true}
-                                        imageSize={60}
-                                        isDisabled={true}
-                                        fractions={10}
-                                        imageSize={20}
-                                        style={{ width: '30%', alignSelf: 'flex-start', paddingLeft: '29%', paddingBottom: 10, paddingTop: 2 }}
-                                        // showRating
-                                        onFinishRating={this.ratingCompleted}
-                                    />
-                                    {/* <Text>{item.Rating}</Text> */}
-                                    <Text style={styleFeed.text}>{item.AddressLine1}</Text>
-                                    <Text style={styleFeed.text}>{item.AddressLine2}</Text>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                        <View style={styleFeed.column3}>
-                            <TouchableHighlight
-                                onPress={() => this.props.navigation.navigate('Details', { params: this.state.data[item] })}
-                            >
-                                <View>
-
-                                    <Text style={styleFeed.title}>{item.Distance.toFixed(1)} m</Text>
-                                    {item.IsPetFriendly == true ?
-                                        <View >
-                                            <Thumbnail style={styleFeed.logo} source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQJtnvq6HQilkJSkLKBEfDS6sWQPjm3n-GjYg&usqp=CAU' }}></Thumbnail>
-                                            {/* <Image source={require('./img/ic.svg')} style={styleFeed.logo}></Image> */}
-                                            <Text style={styleFeed.title}>Pet Friendly</Text>
-                                        </View>
-                                        :
-                                        null
-                                    }
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                    
-                    </CardItem>
+            <FlatList data={this.state.data} renderItem={({ item, index }) => (
+              <TouchableHighlight
+                onPress={() => this.props.navigation.navigate('Details', { params: item })}
+              >
+                <View>
+                  <CardItem style={styleFeed.cards}>
+                    <View style={styleFeed.column1}>
+                      <Thumbnail square large source={{ uri: item.Thumbnail }} />
+                    </View>
+                    <View style={styleFeed.column2}>
+                      <View>
+                        {/* <Text>{this.state.data[item]}</Text> */}
+                        <Text style={styleFeed.title}>{item.PlaceName}</Text>
+                        <Rating
+                          type='star'
+                          count={5}
+                          // onStartRating={item.Rating}
+                          onFinishRating={item.Rating}
+                          startingValue={item.Rating}
+                          readonly={true}
+                          imageSize={60}
+                          isDisabled={true}
+                          fractions={10}
+                          imageSize={20}
+                          style={{ width: '30%', alignSelf: 'flex-start', paddingLeft: '29%', paddingBottom: 10, paddingTop: 2 }}
+                          // showRating
+                          onFinishRating={this.ratingCompleted}
+                        />
+                        {/* <Text>{item.Rating}</Text> */}
+                        <Text style={styleFeed.text}>{item.AddressLine1}</Text>
+                        <Text style={styleFeed.text}>{item.AddressLine2}</Text>
+                      </View>
+                    </View>
+                    <View style={styleFeed.column3}>
+                      <View>
+                        <Text style={styleFeed.title}>{(item.Distance*0.000621371).toFixed(1)} mi</Text>
+                        {item.IsPetFriendly == true ?
+                          <View >
+                            <Thumbnail style={styleFeed.logo} source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQJtnvq6HQilkJSkLKBEfDS6sWQPjm3n-GjYg&usqp=CAU' }}></Thumbnail>
+                            {/* <Image source={require('./img/ic.svg')} style={styleFeed.logo}></Image> */}
+                            <Text style={styleFeed.title}>Pet Friendly</Text>
+                          </View>
+                          :
+                          null
+                        }
+                      </View>
+                    </View>
+                  </CardItem>
+                </View>
+              </TouchableHighlight>
                 )}
-                    key={(item, index) => index}
-                    keyExtractor={(item, index) => index}
+                    key={item => item.PlaceId}
+                    keyExtractor={item => item.PlaceId.toString()}
                 />
             </Container>
         );
