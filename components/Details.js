@@ -4,13 +4,6 @@ import { Container,View, Text, Spinner, CardItem, Icon, Thumbnail } from 'native
 // import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { Rating } from 'react-native-ratings';
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import {
-    StaticGoogleMap,
-    Marker,
-    Path,
-    GoogleStaticMap
-  } from 'react-static-google-map';
-   
 
 export default class Details extends Component {
   constructor(props) {
@@ -53,38 +46,6 @@ export default class Details extends Component {
                 (
                     <View>
                         <CardItem style={styleDetails.cards}>
-
-                            {/* <MapView
-                                // provider={'AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8'}
-                                provider={PROVIDER_GOOGLE}
-                                initialRegion={{
-                                        latitude: 37.78825,
-                                        longitude: -122.4324,
-                                        latitudeDelta: 0.0922,
-                                        longitudeDelta: 0.0421,
-                                    
-                                }}
-                                showsUserLocation={false}
-                                /> */}
-
-
-                            {/* <StaticGoogleMap size="600x600" apiKey="AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8">
-                                <Marker
-                                    location={{ lat: 40.737102, lng: -73.990318 }}
-                                    color="blue"
-                                    label="P"
-                                /><Marker location="6.4488387,3.5496361" color="blue" label="P" />
-                            </StaticGoogleMap> */}
-
-
-                            
-
-                            <GoogleStaticMap
-            style={styles.map}
-            latitude={'32.064171'}
-            longitude={'34.7748068'}
-            zoom={13}
-            size={{ width: 300, height: 550 }} />
 
 
 
