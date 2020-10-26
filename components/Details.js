@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Linking } from 'react-native';
 import { Container,View, Text, Spinner, CardItem, Icon, Thumbnail } from 'native-base';
-import {getDirections, MapView} from 'react-native-google-maps-directions';
-import GetLocation from 'react-native-get-location';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+// import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import { Rating } from 'react-native-ratings';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 export default class Details extends Component {
@@ -17,40 +16,18 @@ export default class Details extends Component {
         params: null,
         regionLoaded: false,
         didmount:false,
-        myLatitude: 0,
-        myLongitude: 0,
         params: null,
     };
     
   }
 
-
-
   componentDidMount = () => {
     
     const {params} = this.props.route.params; 
-    console.log('Hi');
-    console.log(params);
+    // console.log('Hi');
+    // console.log(params);
     this.setState({data: params, loading:false})
   }
-
-  GetLocation() {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-    })
-      .then(location => {
-        // console.log('LOCATIOOOOOOOOON')
-        // console.log(location);
-        this.setState({myLatitude: location.latitude, myLongitude: location.longitude});
-      })
-      .catch(error => {
-        const { code, message } = error;
-        console.warn(code, message);
-      });
-  }
-
-
   
   render() {
     const region ={
@@ -67,25 +44,9 @@ export default class Details extends Component {
                 (
                     <View>
                         <CardItem style={styleDetails.cards}>
-                            {/* <MapViewDirections
-                        origin={{
-                            longitude: this.state.myLatitude,
-                            latitude: this.state.myLatitude,}}
-                        destination={region}
-                        apikey={AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8}
-                        />
-                         */}
+
                         </CardItem>
                         <CardItem style={styleDetails.cards}>
-                            {/* <MapViewDirections
-                        origin={{
-                            longitude: this.state.myLatitude,
-                            latitude: this.state.myLatitude,}}
-                        destination={region}
-                        apikey={AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8}
-                        />
-                         */}
-
                             <View style={styleDetails.bigColumn}>
                                 <Text style={styleDetails.name}>{String(this.state.data.PlaceName)}</Text>
                                 <Rating
@@ -112,19 +73,20 @@ export default class Details extends Component {
                             </View>
                         </CardItem>
 
-                        <CardItem style={styleDetails.cards}>
+                        <CardItem style={styleDetails.cards}
+                            onPress={() => Linking.openURL('geo:'+this.state.data.Latitude+','+this.state.data.Longitude) }>
                             <View style={styleDetails.smallColumn}>
                                 <Icon name="arrow-forward-sharp" style={styleDetails.RightLogos}></Icon>
                             </View>
                             <View style={styleDetails.bigColumn}>
                                 <Text style={styleDetails.title}>Directions</Text>
                                 <Text style={styleDetails.text}>
-                                    {((this.state.data.Distance / 1000) / 0.0166666666666667).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} h drive
+                                    {((this.state.data.Distance / 1000) / 60 ).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} h drive
                                 </Text>
                             </View>
                             <View style={styleDetails.smallColumn}>
                                 <TouchableHighlight 
-                                    // onPress={() => this.redirectToMap() }
+                                    onPress={() => Linking.openURL('geo:'+this.state.data.Latitude+','+this.state.data.Longitude) }
                                     >
                                     <Text style={styleDetails.next}>{'>'}</Text>
                                 </TouchableHighlight>
@@ -132,7 +94,8 @@ export default class Details extends Component {
                         </CardItem>
 
 
-                        <CardItem style={styleDetails.cards}>
+                        <CardItem style={styleDetails.cards}
+                            onPress={() => { Linking.openURL('tel:' + this.state.data.PhoneNumber) }}>
                             <View style={styleDetails.smallColumn}>
                                 <Icon name="arrow-undo-circle-outline" style={styleDetails.RightLogos}></Icon>
                             </View>
@@ -165,7 +128,10 @@ export default class Details extends Component {
                                 </Text>
                             </View>
                             <View style={styleDetails.smallColumn}>
-                                <Text style={styleDetails.next}>{'>'}</Text>
+                                <TouchableHighlight
+                                    onPress={() => { Linking.openURL(this.state.data.Site); }}>
+                                    <Text style={styleDetails.next}>{'>'}</Text>
+                                </TouchableHighlight>
                             </View>
                         </CardItem>
                     </View>
