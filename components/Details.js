@@ -33,6 +33,8 @@ export default class Details extends Component {
     const region ={
         latitude: this.props.route.params.Latitude,
         longitude: this.props.route.params.Longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
     } 
     return (
         <Container>
