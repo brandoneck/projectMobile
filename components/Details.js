@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { StyleSheet, Linking } from 'react-native';
 import { Container,View, Text, Spinner, CardItem, Icon, Thumbnail } from 'native-base';
-import {getDirections, MapView} from 'react-native-google-maps-directions';
-import GetLocation from 'react-native-get-location';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+// import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import { Rating } from 'react-native-ratings';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import {
+    StaticGoogleMap,
+    Marker,
+    Path,
+    GoogleStaticMap
+  } from 'react-static-google-map';
+   
 
 export default class Details extends Component {
   constructor(props) {
@@ -17,14 +23,10 @@ export default class Details extends Component {
         params: null,
         regionLoaded: false,
         didmount:false,
-        myLatitude: 0,
-        myLongitude: 0,
         params: null,
     };
     
   }
-
-
 
   componentDidMount = () => {
     
@@ -33,29 +35,13 @@ export default class Details extends Component {
     console.log(params);
     this.setState({data: params, loading:false})
   }
-
-  GetLocation() {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-    })
-      .then(location => {
-        // console.log('LOCATIOOOOOOOOON')
-        // console.log(location);
-        this.setState({myLatitude: location.latitude, myLongitude: location.longitude});
-      })
-      .catch(error => {
-        const { code, message } = error;
-        console.warn(code, message);
-      });
-  }
-
-
   
   render() {
     const region ={
         latitude: this.props.route.params.Latitude,
         longitude: this.props.route.params.Longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
     } 
     return (
         <Container>
@@ -67,25 +53,43 @@ export default class Details extends Component {
                 (
                     <View>
                         <CardItem style={styleDetails.cards}>
-                            {/* <MapViewDirections
-                        origin={{
-                            longitude: this.state.myLatitude,
-                            latitude: this.state.myLatitude,}}
-                        destination={region}
-                        apikey={AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8}
-                        />
-                         */}
+
+                            {/* <MapView
+                                // provider={'AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8'}
+                                provider={PROVIDER_GOOGLE}
+                                initialRegion={{
+                                        latitude: 37.78825,
+                                        longitude: -122.4324,
+                                        latitudeDelta: 0.0922,
+                                        longitudeDelta: 0.0421,
+                                    
+                                }}
+                                showsUserLocation={false}
+                                /> */}
+
+
+                            {/* <StaticGoogleMap size="600x600" apiKey="AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8">
+                                <Marker
+                                    location={{ lat: 40.737102, lng: -73.990318 }}
+                                    color="blue"
+                                    label="P"
+                                /><Marker location="6.4488387,3.5496361" color="blue" label="P" />
+                            </StaticGoogleMap> */}
+
+
+                            
+
+                            <GoogleStaticMap
+            style={styles.map}
+            latitude={'32.064171'}
+            longitude={'34.7748068'}
+            zoom={13}
+            size={{ width: 300, height: 550 }} />
+
+
+
                         </CardItem>
                         <CardItem style={styleDetails.cards}>
-                            {/* <MapViewDirections
-                        origin={{
-                            longitude: this.state.myLatitude,
-                            latitude: this.state.myLatitude,}}
-                        destination={region}
-                        apikey={AIzaSyAQvSO9BuP85FUMHe-QNIHnTV7nP-O5mU8}
-                        />
-                         */}
-
                             <View style={styleDetails.bigColumn}>
                                 <Text style={styleDetails.name}>{String(this.state.data.PlaceName)}</Text>
                                 <Rating
@@ -112,7 +116,8 @@ export default class Details extends Component {
                             </View>
                         </CardItem>
 
-                        <CardItem style={styleDetails.cards}>
+                        <CardItem style={styleDetails.cards}
+                            onPress={() => Linking.openURL('geo:'+this.state.data.Latitude+','+this.state.data.Longitude) }>
                             <View style={styleDetails.smallColumn}>
                                 <Icon name="arrow-forward-sharp" style={styleDetails.RightLogos}></Icon>
                             </View>
@@ -124,7 +129,7 @@ export default class Details extends Component {
                             </View>
                             <View style={styleDetails.smallColumn}>
                                 <TouchableHighlight 
-                                    // onPress={() => this.redirectToMap() }
+                                    onPress={() => Linking.openURL('geo:'+this.state.data.Latitude+','+this.state.data.Longitude) }
                                     >
                                     <Text style={styleDetails.next}>{'>'}</Text>
                                 </TouchableHighlight>
