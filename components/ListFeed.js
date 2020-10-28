@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Image, alert, Linking, TouchableHighlight } from 'react-native';
+import { StyleSheet, FlatList, Image, alert, Linking, TouchableHighlight, TouchableOpacity } from 'react-native';
 import GetLocation from 'react-native-get-location';
 import { getDistance, getPreciseDistance } from 'geolib';
 import { Container,View, Body, Right, Button, Icon, Title, Header, Text, Thumbnail, Item, Input, Label, ListItem,Toast,Card,CardItem, List, Fab, Spinner, Left } from 'native-base';
@@ -24,7 +24,7 @@ export default class ListFeed extends Component {
       this.GetLocation();
   }
 
-  GetLocation() {
+  GetLocation = async () => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
@@ -33,16 +33,28 @@ export default class ListFeed extends Component {
         // console.log('LOCATIOOOOOOOOON')
         // console.log(location);
         this.setState({myLatitude: location.latitude, myLongitude: location.longitude});
+        this.getInfo();
       })
       .catch(error => {
-        const { code, message } = error;
-        console.warn(code, message);
+        // const { code, message } = error;
+        // console.warn(code, message);
+        Toast.show({
+          text: 'Please turn on your location.',
+          position: 'bottom',
+          type: 'danger',
+          duration: 5000
+        });
+        this.setState({ loading: false });
+
       });
-      this.getInfo();
+  }
+  reload() {
+    this.setState({loading: true});
+    this.GetLocation();
   }
 
   getInfo = async () =>{
-    this.setState({loading: true});
+    // this.setState({loading: true});
     var URL ="http://www.mocky.io/v2/5bf3ce193100008900619966";
     fetch(URL,
       {
@@ -65,7 +77,6 @@ export default class ListFeed extends Component {
 
       })
       .catch((error) => {
-        if (data != []) {
           this.setState({ loading: false });
           Toast.show({
             text: 'Something is wrong, please try again.',
@@ -73,7 +84,6 @@ export default class ListFeed extends Component {
             type: 'danger',
             duration: 5000
           });
-        }
       });
   }
 
@@ -178,57 +188,73 @@ export default class ListFeed extends Component {
                   </CardItem>
                 </View>
               </TouchableHighlight>
-                )}
-                    key={item => item.PlaceId}
-                    keyExtractor={item => item.PlaceId.toString()}
-                />
+            )}
+              key={item => item.PlaceId}
+              keyExtractor={item => item.PlaceId.toString()}
+              ListEmptyComponent={this.state.data.length < 2 && this.state.loading == false ?
+
+                <TouchableOpacity
+                  onPress={() => this.reload()}>
+                  <View style={styleFeed.areaEmptyList}>
+                    <Thumbnail style={styleFeed.logo}
+                      source={{ uri: 'https://josh.biz/wp-content/uploads/2012/11/refresh.gif' }} />
+                    <Text style={styleFeed.title}>Touch to reload</Text>
+                  </View>
+                </TouchableOpacity>
+                :
+                null
+              }
+            />
             </Container>
         );
     }
 }
 const styleFeed = StyleSheet.create({
-    cardMargin:{
-      paddingLeft:1,paddingRight:1
-    },
-    emptyList:{
-      alignItems:"center", paddingTop:7
-    }, 
-    emptyText:{
-      color:"red"
-    }	,
-    cards:{
-      borderColor: "#98A0A6", borderWidth: 0.2
-    },
-    column1:{
-      width: '20%'
-    },
-    column2:{
-      width: '50%', paddingLeft: 25
-    },
-    column3:{
-      width: '30%', alignItems: 'flex-end'
-    },
-    banner: {
-      width: 200, height: 30, marginTop:20, marginBottom: 20, alignSelf: 'center'
-    },
-    title:{
-      fontSize: 17,
-      color: '#98A0A6',
-    },
-    text:{
-        fontSize: 14,
-        color: '#98A0A6',
-    },
-    distance:{
-      fontSize: 16,
-      color: '#98A0A6',
-      alignSelf: 'flex-end',
-      paddingBottom: 3,
-    },
-    logo: {
-      width:50,
-      height:50,
-      top:0,
-      alignSelf: 'center',
-    },
-  });
+  cardMargin: {
+    paddingLeft: 1, paddingRight: 1
+  },
+  emptyList: {
+    alignItems: "center", paddingTop: 7
+  },
+  cards: {
+    borderColor: "#98A0A6", borderWidth: 0.2
+  },
+  column1: {
+    width: '20%'
+  },
+  column2: {
+    width: '50%', paddingLeft: 25
+  },
+  column3: {
+    width: '30%', alignItems: 'flex-end'
+  },
+  banner: {
+    width: 200, height: 30, marginTop: 20, marginBottom: 20, alignSelf: 'center'
+  },
+  title: {
+    fontSize: 17,
+    color: '#98A0A6',
+  },
+  text: {
+    fontSize: 14,
+    color: '#98A0A6',
+  },
+  distance: {
+    fontSize: 16,
+    color: '#98A0A6',
+    alignSelf: 'flex-end',
+    paddingBottom: 3,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    top: 0,
+    alignSelf: 'center',
+  },
+  areaEmptyList: {
+    alignItems: "center", paddingTop: "40%", flex: 1
+  },
+  emptyText: {
+    color: "red"
+  },
+});
