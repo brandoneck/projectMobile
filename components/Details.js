@@ -3,7 +3,7 @@ import { StyleSheet, Linking } from 'react-native';
 import { Container,View, Text, Spinner, CardItem, Icon, Thumbnail } from 'native-base';
 // import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { Rating } from 'react-native-ratings';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { ScrollView, TouchableHighlight } from 'react-native-gesture-handler';
 
 export default class Details extends Component {
   constructor(props) {
@@ -24,8 +24,8 @@ export default class Details extends Component {
   componentDidMount = () => {
     
     const {params} = this.props.route.params; 
-    console.log('Hi');
-    console.log(params);
+    // console.log('Hi');
+    // console.log(params);
     this.setState({data: params, loading:false})
   }
   
@@ -38,6 +38,7 @@ export default class Details extends Component {
     } 
     return (
         <Container>
+            <ScrollView>
             
 
             {this.state.data != [] && this.state.data.length > 3 ?
@@ -45,11 +46,11 @@ export default class Details extends Component {
                 :
                 (
                     <View>
-                        <CardItem style={styleDetails.cards}>
-
-
-
+                        <CardItem style={styleDetails.cardMap}>
+                            <Thumbnail square style={styleDetails.map}
+                            source={{ uri: 'https://www.google.com/maps/d/thumbnail?mid=1-JrzRgVe_iu0NQQNslOWjBIJcyQ'}}/>
                         </CardItem>
+
                         <CardItem style={styleDetails.cards}>
                             <View style={styleDetails.bigColumn}>
                                 <Text style={styleDetails.name}>{String(this.state.data.PlaceName)}</Text>
@@ -85,7 +86,7 @@ export default class Details extends Component {
                             <View style={styleDetails.bigColumn}>
                                 <Text style={styleDetails.title}>Directions</Text>
                                 <Text style={styleDetails.text}>
-                                    {((this.state.data.Distance / 1000) / 0.0166666666666667).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} h drive
+                                    {((this.state.data.Distance / 1000) / 60 ).toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')} h drive
                                 </Text>
                             </View>
                             <View style={styleDetails.smallColumn}>
@@ -98,7 +99,8 @@ export default class Details extends Component {
                         </CardItem>
 
 
-                        <CardItem style={styleDetails.cards}>
+                        <CardItem style={styleDetails.cards}
+                            onPress={() => { Linking.openURL('tel:' + this.state.data.PhoneNumber) }}>
                             <View style={styleDetails.smallColumn}>
                                 <Icon name="arrow-undo-circle-outline" style={styleDetails.RightLogos}></Icon>
                             </View>
@@ -131,12 +133,16 @@ export default class Details extends Component {
                                 </Text>
                             </View>
                             <View style={styleDetails.smallColumn}>
-                                <Text style={styleDetails.next}>{'>'}</Text>
+                                <TouchableHighlight
+                                    onPress={() => { Linking.openURL(this.state.data.Site); }}>
+                                    <Text style={styleDetails.next}>{'>'}</Text>
+                                </TouchableHighlight>
                             </View>
                         </CardItem>
                     </View>
                 )
             }
+        </ScrollView>
 
         </Container>
     );
@@ -206,7 +212,23 @@ const styleDetails = StyleSheet.create({
         width:25,
         height:25,
         // alignSelf: 'center',
+      },
+      cardMap:{
+        borderColor: "#98A0A6", 
+        borderWidth: 0.2,  
+        // alignContent: 'flex-start',
+        width:'100%',
+        height: '40%',
+        alignItems: 'center',
+        alignContent: 'center',
+        alignSelf: 'center',
 
+      },
+      map:{
+          flex: 1,
+          height: 300,
+          width: '100%'
+        
       }
     
       
